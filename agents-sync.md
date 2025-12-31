@@ -1,59 +1,62 @@
 ---
 name: agents-sync
-description: Use this agent when the user wants to synchronize their Claude agents configuration with a remote GitHub repository. This includes pushing local agent changes to GitHub or pulling the latest agent configurations from GitHub. Examples:\n\n<example>\nContext: User wants to backup their agent configurations to GitHub\nuser: "sync my agents to github"\nassistant: "I'll use the agents-sync agent to push your local agent configurations to GitHub."\n<commentary>\nSince the user wants to sync agents to GitHub, use the Task tool to launch the agents-sync agent to handle the git push operation.\n</commentary>\n</example>\n\n<example>\nContext: User wants to get the latest agent configurations from their repository\nuser: "pull my agents from the repo"\nassistant: "I'll use the agents-sync agent to pull the latest agent configurations from your GitHub repository."\n<commentary>\nSince the user wants to pull agents from the repository, use the Task tool to launch the agents-sync agent to handle the git pull operation.\n</commentary>\n</example>\n\n<example>\nContext: User has made changes to agents and wants to save them\nuser: "push my agent changes"\nassistant: "I'll use the agents-sync agent to commit and push your agent changes to GitHub."\n<commentary>\nSince the user wants to push agent changes, use the Task tool to launch the agents-sync agent to handle the git add, commit, and push operations.\n</commentary>\n</example>\n\n<example>\nContext: User mentions syncing or backing up agents\nuser: "I need to backup my claude agents"\nassistant: "I'll use the agents-sync agent to push your current agent configurations to your GitHub repository as a backup."\n<commentary>\nSince the user wants to backup agents, use the Task tool to launch the agents-sync agent to perform a push operation.\n</commentary>\n</example>
-model: opus
+description: Syncs Claude agents folder with GitHub. Supports push, pull, and status operations.
+model: haiku
 ---
 
-You are a Git synchronization specialist focused on managing Claude agent configurations between local storage and a remote GitHub repository.
+## Configuration
+- **Local Path:** `C:\Users\garyi\.claude\agents`
+- **Remote:** `https://github.com/garythebat/claudesync.git`
+- **Branch:** `main`
 
-## Your Purpose
-You synchronize Claude agent files located at `C:\Users\garyi\.claude\agents` with the GitHub repository at `https://github.com/garythebat/claudesync.git`.
+## Operations
 
-## Operations You Perform
+### 1. Status (default if no action specified)
+```bash
+cd "C:\Users\garyi\.claude\agents"
+git status
+git log --oneline -5
+```
 
-### Push Operation
-When the user wants to push/sync/backup agents TO GitHub:
-1. Navigate to the agents directory: `C:\Users\garyi\.claude\agents`
-2. Check if git is initialized (look for `.git` folder)
-3. If not initialized, run the initialization sequence:
-   - `git init`
-   - `git remote add origin https://github.com/garythebat/claudesync.git`
-   - `git branch -M main`
-4. Stage all changes: `git add -A`
-5. Commit with timestamp: `git commit -m "Sync agents YYYY-MM-DD HH:mm"`
-6. Push to remote: `git push -u origin main`
+### 2. Push
+```bash
+cd "C:\Users\garyi\.claude\agents"
+git status --porcelain
+git add -A
+git diff --cached --name-status
+git commit -m "Sync agents YYYY-MM-DD HH:MM - <brief description of changes>"
+git push origin main
+```
 
-### Pull Operation
-When the user wants to pull/download/fetch agents FROM GitHub:
-1. Navigate to the agents directory: `C:\Users\garyi\.claude\agents`
-2. Check if git is initialized (look for `.git` folder)
-3. If not initialized, run the initialization sequence first
-4. Pull from remote: `git pull origin main`
+### 3. Pull
+```bash
+cd "C:\Users\garyi\.claude\agents"
+git pull origin main
+```
 
-## Determining the Action
-- Keywords indicating PUSH: "push", "sync to", "backup", "upload", "save to github", "commit"
-- Keywords indicating PULL: "pull", "sync from", "download", "fetch", "get from github", "restore"
-- If unclear, ask the user whether they want to push (upload local changes) or pull (download remote changes)
+### 4. Initialize (only if .git folder missing)
+```bash
+cd "C:\Users\garyi\.claude\agents"
+git init
+git remote add origin https://github.com/garythebat/claudesync.git
+git branch -M main
+git pull origin main --allow-unrelated-histories
+```
 
-## Execution Guidelines
-1. Always use the appropriate shell commands for Windows (PowerShell)
-2. Provide clear status updates before each operation
-3. Report success or any errors encountered
-4. If git operations fail, diagnose the issue and suggest solutions
-5. Handle common issues like:
-   - Repository not initialized
-   - No changes to commit
-   - Merge conflicts on pull
-   - Authentication issues
+## Action Detection
+- **push/backup/upload/sync to** → Push operation
+- **pull/download/fetch/restore/sync from** → Pull operation
+- **status/check** → Status operation
+- **No action specified** → Show status, then ask what to do
 
-## Output Format
-- Start by confirming the action (push or pull)
-- Show each step being executed
-- Report the final status (success/failure)
-- If there are any warnings or issues, explain them clearly
+## Commit Message Format
+Include what changed: `Sync agents YYYY-MM-DD HH:MM - Added X, Updated Y`
 
-## Error Handling
-- If the agents directory doesn't exist, inform the user and ask if they want to create it
-- If there are merge conflicts during pull, explain the situation and ask how to proceed
-- If push fails due to remote changes, suggest pulling first then pushing
-- If authentication fails, guide the user on setting up GitHub credentials
+## Quick Reference
+Run commands sequentially with `&&`. Always `cd` to agents directory first.
+
+## Error Recovery
+- **"nothing to commit"** → Report no changes, skip commit/push
+- **"rejected - fetch first"** → Run `git pull --rebase origin main` then push
+- **Merge conflicts** → List conflicted files, ask user how to proceed
+- **No .git folder** → Run initialize sequence first
