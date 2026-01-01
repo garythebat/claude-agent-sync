@@ -1,6 +1,6 @@
-# Claude Code Agents
+# Claude Agent Sync
 
-A collection of custom agents for [Claude Code](https://claude.com/claude-code) that extend its capabilities with reusable workflows.
+Keep your [Claude Code](https://claude.com/claude-code) agents in sync across multiple workstations. This repo stores my custom agents and provides sync workflows so any machine running Claude Code can pull the latest versions.
 
 ## Agents
 
