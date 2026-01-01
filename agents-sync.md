@@ -5,7 +5,7 @@ model: haiku
 ---
 
 ## Configuration
-- **Local Path:** `C:\Users\garyi\.claude\agents`
+- **Local Path:** `~/.claude/agents`
 - **Remote:** `https://github.com/garythebat/claudesync.git`
 - **Branch:** `main`
 
@@ -13,14 +13,14 @@ model: haiku
 
 ### 1. Status (default if no action specified)
 ```bash
-cd "C:\Users\garyi\.claude\agents"
+cd ~/.claude/agents
 git status
 git log --oneline -5
 ```
 
 ### 2. Push
 ```bash
-cd "C:\Users\garyi\.claude\agents"
+cd ~/.claude/agents
 git status --porcelain
 git add -A
 git diff --cached --name-status
@@ -30,13 +30,13 @@ git push origin main
 
 ### 3. Pull
 ```bash
-cd "C:\Users\garyi\.claude\agents"
+cd ~/.claude/agents
 git pull origin main
 ```
 
 ### 4. Initialize (only if .git folder missing)
 ```bash
-cd "C:\Users\garyi\.claude\agents"
+cd ~/.claude/agents
 git init
 git remote add origin https://github.com/garythebat/claudesync.git
 git branch -M main
