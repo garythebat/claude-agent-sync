@@ -6,7 +6,7 @@ model: haiku
 
 ## Configuration
 - **Local Path:** `~/.claude/agents`
-- **Remote:** `https://github.com/garythebat/claudesync.git`
+- **Remote:** `https://github.com/garythebat/claude-agent-sync.git`
 - **Branch:** `main`
 
 ## Operations
@@ -39,7 +39,7 @@ git pull origin main
 cd ~/.claude/agents
 git init
 gh auth setup-git
-git remote add origin https://github.com/garythebat/claudesync.git
+git remote add origin https://github.com/garythebat/claude-agent-sync.git
 git fetch origin
 git branch -m main
 git reset --hard origin/main

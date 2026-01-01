@@ -18,8 +18,18 @@ Clone this repo to your Claude Code agents folder:
 ```bash
 cd ~/.claude/agents
 git init
-git remote add origin https://github.com/garythebat/claudesync.git
+git remote add origin https://github.com/garythebat/claude-agent-sync.git
 git pull origin main
+```
+
+## Migrating from Old Repo URL
+
+If you previously cloned this repo as `claudesync`, update your remote:
+
+```bash
+cd ~/.claude/agents
+git remote set-url origin https://github.com/garythebat/claude-agent-sync.git
+git pull
 ```
 
 ## Usage
